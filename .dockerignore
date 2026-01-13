@@ -1,0 +1,43 @@
+# Frontend build artifacts
+node_modules/
+.next/
+out/
+.env.local
+.env.development
+.env.production
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+venv/
+.venv
+
+# Storage
+storage/
+*.db
+*.sqlite3
+
+# IDE & Git
+.vscode/
+.idea/
+.git/
+.gitignore
+*.swp
+
+# Build files
+.DS_Store
+
+# Environment (secrets shouldn't be in image)
+.env*
+
+# Logs
+logs/
+*.log

@@ -1,0 +1,7 @@
+email,name,role
+alice@example.com,Alice,Admin
+bob@example.com,Bob,User
+charlie@example.com,Charlie,Voter
+diana@example.com,Diana,Voter
+eve@example.com,Eve,Admin
+frank@invalid.x,Frank,Invalid

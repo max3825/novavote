@@ -1,0 +1,52 @@
+# Multi-stage build for optimized production backend
+# Stage 1: Builder (compile dependencies)
+FROM python:3.11-slim AS builder
+
+WORKDIR /build
+
+# Install only build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python packages to user directory
+RUN pip install --no-cache-dir --user \
+    --compile \
+    -r requirements.txt
+
+# Stage 2: Production runtime (lightweight)
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 1000 appuser
+
+# Copy precompiled packages from builder
+COPY --from=builder /root/.local /home/appuser/.local
+
+# Set PATH for pip packages
+ENV PATH=/home/appuser/.local/bin:$PATH \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
+
+# Copy application code
+COPY --chown=appuser:appuser . .
+
+# Create storage directory
+RUN mkdir -p /app/storage && chown appuser:appuser /app/storage
+
+USER appuser
+
+EXPOSE 8000
+
+# Run production server (no --reload)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
