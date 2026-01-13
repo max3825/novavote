@@ -102,3 +102,4 @@ logs/
 
 ### IPFS local
 .ipfs/
+.github/instructions/
