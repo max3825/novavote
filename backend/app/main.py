@@ -15,6 +15,26 @@ app = FastAPI(
     default_response_class=ORJSONResponse
 )
 
+# Basic request size limiting to mitigate resource exhaustion
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response, PlainTextResponse
+
+MAX_REQUEST_BYTES = 10 * 1024 * 1024  # 10 MB
+
+class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        cl = request.headers.get("content-length")
+        if cl is not None:
+            try:
+                if int(cl) > MAX_REQUEST_BYTES:
+                    return PlainTextResponse("Request too large", status_code=413)
+            except ValueError:
+                pass
+        return await call_next(request)
+
+app.add_middleware(RequestSizeLimitMiddleware)
+
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,

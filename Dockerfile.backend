@@ -13,10 +13,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy requirements
 COPY requirements.txt .
 
-# Install Python packages to user directory
-RUN pip install --no-cache-dir --user \
-    --compile \
-    -r requirements.txt
+# Upgrade pip tooling to fetch latest wheels and security fixes
+RUN python -m pip install --upgrade pip setuptools wheel \
+    && pip --version \
+    && pip install --no-cache-dir --user \
+       --compile \
+       -r requirements.txt
 
 # Stage 2: Production runtime (lightweight)
 FROM python:3.11-slim
