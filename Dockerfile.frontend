@@ -16,6 +16,7 @@ COPY . .
 # Set build-time environment variables for Next.js
 ARG NEXT_PUBLIC_API_URL=http://localhost:8001/api/v1
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NODE_ENV=production
 
 # Build Next.js app with standalone output
 RUN npm run build

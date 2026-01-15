@@ -11,7 +11,9 @@ interface CreateElectionWizardProps {
   onComplete?: () => void;
 }
 
-export default function CreateElectionWizard({ onComplete }: CreateElectionWizardProps) {
+export default function CreateElectionWizard({
+  onComplete,
+}: CreateElectionWizardProps) {
   const [currentStep, setCurrentStep] = useState<Step>("Informations");
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -140,8 +142,8 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
-        <div className="card-glass w-full max-w-md p-10 rounded-3xl shadow-2xl text-center space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white dark:bg-slate-900/60 backdrop-blur p-10 rounded-3xl shadow-2xl text-center space-y-6 border border-slate-200 dark:border-slate-800">
           <div className="relative w-24 h-24 mx-auto">
             <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full blur-xl opacity-50"></div>
             <div className="relative w-24 h-24 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
@@ -149,14 +151,16 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
             </div>
           </div>
           <div>
-            <h2 className="text-3xl font-bold tracking-tight gradient-text">Élection créée!</h2>
-            <p className="text-slate-400 mt-3 text-base font-medium">
+            <h2 className="text-3xl font-bold tracking-tight text-indigo-600 dark:text-indigo-300">
+              Élection créée!
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 mt-3 text-base font-medium">
               "{form.title}" est maintenant prête.
             </p>
           </div>
           <button
             onClick={onComplete}
-            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all shadow-lg shadow-indigo-500/30"
+            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white font-medium rounded-lg transition-all shadow-lg shadow-indigo-500/30"
           >
             Retour au dashboard
           </button>
@@ -166,11 +170,11 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl card-glass rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 dark:bg-slate-950">
+      <div className="w-full max-w-6xl bg-white dark:bg-slate-900/60 backdrop-blur rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-slate-200 dark:border-slate-800">
         {/* LEFT SIDEBAR */}
-        <div className="lg:w-64 bg-gradient-to-br from-slate-800/50 to-slate-800/30 border-b lg:border-b-0 lg:border-r border-slate-700 p-6 flex flex-col">
-          <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-8">
+        <div className="lg:w-64 bg-white dark:bg-slate-900/40 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col">
+          <h3 className="text-xs font-bold text-indigo-600 dark:text-indigo-300 uppercase tracking-widest mb-8">
             Étapes
           </h3>
 
@@ -188,17 +192,17 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
                     active
                       ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30"
                       : done
-                        ? "bg-slate-700/50 text-emerald-400 border border-emerald-500/30"
-                        : "bg-slate-800/40 text-slate-300 hover:bg-slate-700/50 border border-transparent hover:border-indigo-500/30"
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:border-emerald-500/30"
+                        : "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 dark:bg-slate-800/40 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
                   }`}
                 >
                   <div
                     className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
                       active
-                        ? "bg-white/20 text-white"
+                        ? "bg-white/25 text-white"
                         : done
-                          ? "bg-emerald-500/20 text-emerald-400"
-                          : "bg-slate-700 text-slate-400"
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/30 dark:text-emerald-100"
+                          : "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
                     }`}
                   >
                     {done ? "✓" : i + 1}
@@ -209,7 +213,7 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
             })}
           </div>
 
-          <div className="pt-4 border-t border-slate-700 text-xs text-slate-500">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
             © 2026 NovaVote
           </div>
         </div>
@@ -219,8 +223,10 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
           <div className="flex-1 overflow-y-auto p-8 lg:p-12">
             <div className="max-w-2xl">
               <div className="mb-10">
-                <h1 className="text-4xl font-bold tracking-tight gradient-text">{currentStep}</h1>
-                <p className="text-slate-400 mt-2 text-base font-medium">
+                <h1 className="text-4xl font-bold tracking-tight text-indigo-600 dark:text-indigo-300">
+                  {currentStep}
+                </h1>
+                <p className="text-slate-600 dark:text-slate-400 mt-2 text-base font-medium">
                   Étape {stepIndex + 1} / {steps.length}
                 </p>
               </div>
@@ -230,80 +236,93 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
                 {currentStep === "Informations" && (
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-sm font-bold text-slate-100 uppercase tracking-wide mb-2">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide mb-2">
                         Titre
                       </label>
                       <input
                         type="text"
                         placeholder="Ex: Élection du CA 2026"
-                        className="input-modern"
+                        className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         value={form.title}
-                        onChange={(e) => setForm({ ...form, title: e.target.value })}
+                        onChange={(e) =>
+                          setForm({ ...form, title: e.target.value })
+                        }
                         autoFocus
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-slate-100 uppercase tracking-wide mb-2">
+                      <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide mb-2">
                         Description
                       </label>
                       <textarea
                         placeholder="Contexte..."
                         rows={4}
-                        className="input-modern resize-none"
+                        className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                         value={form.description}
-                        onChange={(e) => setForm({ ...form, description: e.target.value })}
+                        onChange={(e) =>
+                          setForm({ ...form, description: e.target.value })
+                        }
                       />
                     </div>
 
                     <div className="grid gap-6 sm:grid-cols-2">
                       <div>
-                        <label className="block text-sm font-bold text-slate-100 uppercase tracking-wide mb-2">
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide mb-2">
                           Début
                         </label>
                         <input
                           type="datetime-local"
                           name="start"
-                          className="input-modern"
+                          className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                           value={form.start}
                           onChange={handleDateChange}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-slate-100 uppercase tracking-wide mb-2">
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide mb-2">
                           Fin
                         </label>
                         <input
                           type="datetime-local"
                           name="end"
-                          className={errors.date ? "input-modern border-red-500/50 focus:ring-red-500/20" : "input-modern"}
+                          className={`w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 ${
+                            errors.date
+                              ? "border-red-500 dark:border-red-500/50 focus:ring-red-500"
+                              : "border-slate-300 dark:border-slate-700 focus:ring-indigo-500"
+                          }`}
                           value={form.end}
                           onChange={handleDateChange}
                         />
                       </div>
                     </div>
+
                     {errors.date && (
-                      <div className="p-4 bg-red-500/10 border-l-4 border-red-500 rounded-xl text-red-200 font-medium">
+                      <div className="p-4 bg-red-50 dark:bg-red-500/10 border-l-4 border-red-500 rounded-xl text-red-700 dark:text-red-200 font-medium">
                         ⚠️ {errors.date}
                       </div>
                     )}
                   </div>
                 )}
 
-                {/* STEP 2 */}
+                {/* STEP 2: Questions */}
                 {currentStep === "Questions" && (
                   <div className="space-y-6">
                     {form.questions.map((q, idx) => (
-                      <div key={idx} className="space-y-4 p-6 card-glass">
+                      <div
+                        key={idx}
+                        className="space-y-4 p-6 bg-slate-100 dark:bg-slate-800/30 border border-slate-300 dark:border-slate-700 rounded-xl"
+                      >
                         <div className="flex items-center justify-between mb-4">
                           <span className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold flex items-center justify-center">
                             {idx + 1}
                           </span>
                         </div>
+
                         <input
                           type="text"
                           placeholder="Question..."
-                          className="input-modern text-lg font-semibold"
+                          className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-lg font-semibold placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                           value={q.label}
                           onChange={(e) => {
                             const clone = [...form.questions];
@@ -313,24 +332,26 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
                         />
 
                         <div className="flex gap-2">
-                          {["single", "multiple", "ranking"].map((type) => (
+                          {[
+                            { value: "single", label: "Unique" },
+                            { value: "multiple", label: "Multiple" },
+                            { value: "ranking", label: "Classement" },
+                          ].map(({ value, label }) => (
                             <button
-                              key={type}
+                              key={value}
                               type="button"
                               onClick={() => {
                                 const clone = [...form.questions];
-                                clone[idx] = { ...clone[idx], type };
+                                clone[idx] = { ...clone[idx], type: value };
                                 setForm({ ...form, questions: clone });
                               }}
                               className={`flex-1 px-4 py-2 text-xs font-bold uppercase tracking-wide rounded-xl transition-all ${
-                                q.type === type
+                                q.type === value
                                   ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
-                                  : "bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 border border-slate-700"
+                                  : "bg-slate-200 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600"
                               }`}
                             >
-                              {type === "single" && "Unique"}
-                              {type === "multiple" && "Multiple"}
-                              {type === "ranking" && "Classement"}
+                              {label}
                             </button>
                           ))}
                         </div>
@@ -341,13 +362,16 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
                               key={o}
                               type="text"
                               placeholder={`Option ${o + 1}`}
-                              className="input-modern"
+                              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                               value={opt}
                               onChange={(e) => {
                                 const clone = [...form.questions];
                                 const opts = [...clone[idx].options];
                                 opts[o] = e.target.value;
-                                clone[idx] = { ...clone[idx], options: opts };
+                                clone[idx] = {
+                                  ...clone[idx],
+                                  options: opts,
+                                };
                                 setForm({ ...form, questions: clone });
                               }}
                             />
@@ -356,7 +380,7 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
 
                         <button
                           type="button"
-                          className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
+                          className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
                           onClick={() => {
                             const clone = [...form.questions];
                             clone[idx] = {
@@ -373,7 +397,7 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
 
                     <button
                       type="button"
-                      className="w-full px-4 py-2.5 border border-dashed border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 rounded-lg font-medium text-sm transition-all"
+                      className="w-full px-4 py-2.5 border-2 border-dashed border-indigo-500/50 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg font-medium text-sm transition-all"
                       onClick={() =>
                         setForm({
                           ...form,
@@ -389,53 +413,55 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
                   </div>
                 )}
 
-                {/* STEP 3 */}
+                {/* STEP 3: Sécurité */}
                 {currentStep === "Sécurité" && (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-semibold text-slate-100 mb-2">
+                      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
                         Trustees
                       </label>
                       <input
                         type="number"
                         min={3}
-                        className="input-modern"
+                        className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         value={form.trustees}
-                        onChange={(e) => setForm({ ...form, trustees: Number(e.target.value) })}
+                        onChange={(e) =>
+                          setForm({ ...form, trustees: Number(e.target.value) })
+                        }
                       />
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                         Responsables
                       </p>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-slate-100 mb-2">
+                      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
                         Seuil
                       </label>
                       <input
                         type="number"
                         min={2}
                         max={form.trustees}
-                        className="input-modern"
+                        className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         value={form.threshold}
                         onChange={(e) =>
                           setForm({ ...form, threshold: Number(e.target.value) })
                         }
                       />
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
                         Min: {form.threshold}/{form.trustees}
                       </p>
                     </div>
 
-                    <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-3">
-                      <p className="text-xs text-slate-400">
+                    <div className="bg-slate-100 dark:bg-slate-800/30 border border-slate-300 dark:border-slate-700 rounded-lg p-3">
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         ℹ️ Clés privées côté client seulement.
                       </p>
                     </div>
                   </div>
                 )}
 
-                {/* STEP 4 */}
+                {/* STEP 4: Accès */}
                 {currentStep === "Accès" && (
                   <div className="space-y-4">
                     <ParticipantImporter
@@ -448,47 +474,71 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
                       }
                     />
 
-                    <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-3">
-                      <p className="text-xs text-slate-400">
+                    <div className="bg-slate-100 dark:bg-slate-800/30 border border-slate-300 dark:border-slate-700 rounded-lg p-3">
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
                         ✓ Tokens uniques générés automatiquement.
                       </p>
                     </div>
                   </div>
                 )}
 
-                {/* STEP 5 */}
+                {/* STEP 5: Résumé */}
                 {currentStep === "Résumé" && (
                   <div className="space-y-4">
-                    <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-4 space-y-3">
+                    <div className="bg-slate-100 dark:bg-slate-800/30 border border-slate-300 dark:border-slate-700 rounded-lg p-4 space-y-3">
                       <div>
-                        <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Titre</p>
-                        <p className="font-semibold text-slate-100">{form.title || "—"}</p>
+                        <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase mb-1">
+                          Titre
+                        </p>
+                        <p className="font-semibold text-slate-900 dark:text-slate-100">
+                          {form.title || "—"}
+                        </p>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Début</p>
-                          <p className="text-sm text-slate-300">
-                            {form.start ? new Date(form.start).toLocaleDateString("fr-FR") : "—"}
+                          <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase mb-1">
+                            Début
+                          </p>
+                          <p className="text-sm text-slate-700 dark:text-slate-300">
+                            {form.start
+                              ? new Date(form.start).toLocaleDateString(
+                                  "fr-FR"
+                                )
+                              : "—"}
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Fin</p>
-                          <p className="text-sm text-slate-300">
-                            {form.end ? new Date(form.end).toLocaleDateString("fr-FR") : "—"}
+                          <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase mb-1">
+                            Fin
+                          </p>
+                          <p className="text-sm text-slate-700 dark:text-slate-300">
+                            {form.end
+                              ? new Date(form.end).toLocaleDateString("fr-FR")
+                              : "—"}
                           </p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Q</p>
-                          <p className="text-sm text-slate-300">{form.questions.length}</p>
+                          <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase mb-1">
+                            Questions
+                          </p>
+                          <p className="text-sm text-slate-700 dark:text-slate-300">
+                            {form.questions.length}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-slate-400 uppercase mb-1">Votants</p>
-                          <p className="text-sm text-slate-300">
-                            {form.accessList.split("\n").filter((e) => e.includes("@")).length}
+                          <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase mb-1">
+                            Votants
+                          </p>
+                          <p className="text-sm text-slate-700 dark:text-slate-300">
+                            {
+                              form.accessList
+                                .split("\n")
+                                .filter((e) => e.includes("@")).length
+                            }
                           </p>
                         </div>
                       </div>
@@ -499,18 +549,18 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
             </div>
           </div>
 
-          {/* FOOTER avec nouveau design */}
-          <div className="border-t border-slate-700 bg-slate-800/30 backdrop-blur-sm p-6 flex justify-between items-center gap-4">
+          {/* FOOTER */}
+          <div className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/30 backdrop-blur-sm p-6 flex justify-between items-center gap-4">
             <button
               type="button"
               onClick={() => go(-1)}
               disabled={stepIndex === 0}
-              className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               ← Précédent
             </button>
 
-            <span className="text-sm font-bold text-slate-400">
+            <span className="text-sm font-bold text-slate-600 dark:text-slate-400">
               {stepIndex + 1} / {steps.length}
             </span>
 
@@ -518,9 +568,13 @@ export default function CreateElectionWizard({ onComplete }: CreateElectionWizar
               type="button"
               onClick={handleNext}
               disabled={loading || (stepIndex === 1 && !!errors.date)}
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white font-medium rounded-lg transition-all shadow-lg shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Création..." : stepIndex === steps.length - 1 ? "🚀 Créer" : "Suivant →"}
+              {loading
+                ? "Création..."
+                : stepIndex === steps.length - 1
+                  ? "🚀 Créer"
+                  : "Suivant →"}
             </button>
           </div>
         </div>

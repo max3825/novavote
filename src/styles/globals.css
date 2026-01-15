@@ -6,6 +6,32 @@
   --toast-bg: #ffffff;
   --toast-color: #1e293b;
   --toast-border: #e2e8f0;
+  
+  /* Midnight Theme (default) */
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+  --color-success: #10b981;
+}
+
+/* Civic Theme */
+.civic {
+  --toast-bg: #f8fafc;
+  --toast-color: #0f172a;
+  --toast-border: #e2e8f0;
+  
+  --color-bg-primary: #f8fafc;
+  --color-bg-secondary: #f1f5f9;
+  --color-bg-tertiary: #e2e8f0;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
+  --color-accent: #0f766e;
+  --color-accent-light: #14b8a6;
+  --color-success: #10b981;
 }
 
 .dark {
@@ -16,10 +42,22 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-slate-900 to-slate-800;
-    @apply text-slate-100 font-sans antialiased;
+    @apply font-sans antialiased;
     margin: 0;
     font-family: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Midnight-specific base */
+  body.midnight {
+    @apply bg-gradient-to-br from-slate-900 to-slate-800 text-slate-100;
+  }
+  
+  /* Civic-specific base */
+  body.civic {
+    @apply bg-slate-50 text-slate-900;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -36,28 +74,54 @@ a {
   @apply transition-colors duration-200;
 }
 
-* {
+/* Scrollbar Midnight */
+.midnight * {
   scrollbar-width: thin;
   scrollbar-color: #64748b #0f172a;
 }
 
-*::-webkit-scrollbar {
+.midnight *::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
 
-*::-webkit-scrollbar-thumb {
+.midnight *::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #6366f1, #8b5cf6);
   border-radius: 9999px;
   transition: background 0.3s;
 }
 
-*::-webkit-scrollbar-thumb:hover {
+.midnight *::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #4f46e5, #7c3aed);
 }
 
-*::-webkit-scrollbar-track {
+.midnight *::-webkit-scrollbar-track {
   background: #1e293b;
+}
+
+/* Scrollbar Civic */
+.civic * {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+.civic *::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.civic *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0d9488, #10b981);
+  border-radius: 9999px;
+  transition: background 0.3s;
+}
+
+.civic *::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #059669, #047857);
+}
+
+.civic *::-webkit-scrollbar-track {
+  background: #f1f5f9;
 }
 
 /* Smooth animations */
@@ -81,6 +145,33 @@ a {
   50% { background-position: 100% 50%; }
 }
 
+/* Ballot Sealing Animation */
+@keyframes sealEnvelope {
+  0% {
+    transform: scaleX(1) rotateY(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(0.95) rotateY(-15deg);
+  }
+  100% {
+    transform: scaleX(1) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* Envelope Slide Animation */
+@keyframes slideToUrn {
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100px) translateY(100px);
+    opacity: 1;
+  }
+}
+
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient 3s ease infinite;
@@ -99,27 +190,70 @@ a {
     @apply animate-[pulse-soft_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
   }
   
-  .glass {
+  .animate-seal {
+    animation: sealEnvelope 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .animate-slide-to-urn {
+    animation: slideToUrn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  /* Midnight Theme Utilities */
+  .midnight .glass {
     @apply backdrop-blur-md bg-slate-800/50 border border-slate-700 shadow-xl;
   }
   
-  .gradient-text {
+  .midnight .gradient-text {
     @apply bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent;
   }
   
-  .input-modern {
+  .midnight .input-modern {
     @apply w-full px-4 py-3 bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 focus:outline-none transition-all font-medium;
   }
   
-  .btn-primary {
+  .midnight .btn-primary {
     @apply px-6 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/50 transition-all hover:scale-105;
   }
   
-  .btn-secondary {
+  .midnight .btn-secondary {
     @apply px-6 py-3 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-600 text-slate-100 font-semibold transition-all hover:shadow-md hover:scale-105;
   }
   
-  .card-glass {
+  .midnight .card-glass {
     @apply relative bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl hover:shadow-2xl transition-all;
+  }
+  
+  /* Civic Theme Utilities */
+  .civic .glass {
+    @apply backdrop-blur-md bg-white/70 border border-slate-200 shadow-lg;
+  }
+  
+  .civic .gradient-text {
+    @apply bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent;
+  }
+  
+  .civic .input-modern {
+    @apply w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-500 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 focus:outline-none transition-all font-medium;
+  }
+  
+  .civic .btn-primary {
+    @apply px-6 py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold shadow-md shadow-teal-600/20 hover:shadow-lg hover:shadow-teal-600/30 transition-all hover:scale-105;
+  }
+  
+  .civic .btn-secondary {
+    @apply px-6 py-3 rounded-full bg-slate-100 border border-slate-300 hover:border-slate-400 text-slate-900 font-semibold transition-all hover:shadow-md hover:scale-105;
+  }
+  
+  .civic .card-glass {
+    @apply relative bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-lg hover:shadow-xl transition-all;
+  }
+  
+  /* Glow Effect for Civic Success */
+  .civic .glow-emerald {
+    @apply shadow-lg shadow-emerald-500/30;
+  }
+  
+  .midnight .glow-indigo {
+    @apply shadow-lg shadow-indigo-500/30;
   }
 }

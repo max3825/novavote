@@ -1,12 +1,27 @@
+'use client'
+
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { useState, useEffect } from "react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export default function HomePage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    // Vérifier si l'utilisateur est connecté
+    const token = localStorage.getItem('access_token')
+    setIsLoggedIn(!!token)
+  }, [])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
-      {/* Animated Background Blobs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800">
+      {/* Theme Toggle */}
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
+      
+      {/* Animated Background Blobs - seulement en mode sombre */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none dark:opacity-100 opacity-0">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl opacity-40 animate-pulse" />
         <div className="absolute top-1/3 -left-40 w-96 h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl opacity-40 animate-pulse" style={{animationDelay: '1s'}} />
         <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-full blur-3xl opacity-40 animate-pulse" style={{animationDelay: '2s'}} />
@@ -22,27 +37,51 @@ export default function HomePage() {
                 NovaVote
               </span>
             </h1>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-100">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 dark:text-slate-100">
               Plateforme de Vote Électronique Sécurisée
             </h2>
           </div>
           
-          <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium">
-            Votez en toute confiance avec une <span className="text-indigo-400 font-bold">cryptographie de niveau militaire</span>. 
+          <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium">
+            Votez en toute confiance avec une <span className="text-indigo-600 dark:text-indigo-400 font-bold">cryptographie de niveau militaire</span>. 
             Transparent, vérifiable, et respectueux de votre vie privée.
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
-            <Link href="/login">
-              <button className="btn-primary text-xl px-10 py-5 shadow-2xl">
-                🔑 Accès Admin
-              </button>
-            </Link>
-            <Link href="/vote">
-              <button className="btn-secondary text-xl px-10 py-5">
-                🗳️ Voter Maintenant
-              </button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                {/* Bouton principal pour utilisateur connecté */}
+                <Link href="/admin">
+                  <button className="inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+                    📊 Aller au Dashboard
+                  </button>
+                </Link>
+                <Link href="/vote">
+                  <button className="inline-flex items-center justify-center px-10 py-5 text-xl font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-500 transition-all">
+                    🗳️ Voter Maintenant
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <>
+                {/* Auth Buttons distincts pour visiteur non connecté */}
+                <Link href="/login">
+                  <button className="inline-flex items-center justify-center px-10 py-5 text-xl font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-500 transition-all">
+                    🔑 Se connecter
+                  </button>
+                </Link>
+                <Link href="/register">
+                  <button className="inline-flex items-center justify-center px-10 py-5 text-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+                    ✨ Créer un compte
+                  </button>
+                </Link>
+                <Link href="/vote">
+                  <button className="inline-flex items-center justify-center px-10 py-5 text-xl font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-500 transition-all">
+                    🗳️ Voter Maintenant
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -52,31 +91,31 @@ export default function HomePage() {
         <h2 className="text-5xl font-extrabold text-center mb-4 tracking-tight gradient-text">
           Sécurité de Haut Niveau
         </h2>
-        <p className="text-center text-slate-400 mb-20 text-xl font-medium">
+        <p className="text-center text-slate-600 dark:text-slate-400 mb-20 text-xl font-medium">
           Tous les votes sont chiffrés, vérifiables et auditables
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Card 1 */}
           <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-3xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-            <div className="relative card-glass p-8 hover:scale-105 transition-transform">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-3xl blur opacity-0 dark:opacity-20 group-hover:opacity-30 transition-opacity"></div>
+            <div className="relative bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-3xl p-8 hover:scale-105 transition-transform shadow-sm hover:shadow-md">
               <div className="text-7xl mb-6 drop-shadow-md">🔐</div>
-              <h3 className="text-3xl font-bold mb-4 text-slate-100 tracking-tight">Chiffrement ElGamal</h3>
-              <p className="text-slate-400 leading-relaxed text-lg">
+              <h3 className="text-3xl font-bold mb-4 text-slate-900 dark:text-slate-100 tracking-tight">Chiffrement ElGamal</h3>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
                 Protocole cryptographique moderne avec clés publiques distribuées. 
-                Vos votes restent <span className="font-bold text-indigo-400">secrets même du serveur</span>.
+                Vos votes restent <span className="font-bold text-indigo-600 dark:text-indigo-400">secrets même du serveur</span>.
               </p>
             </div>
           </div>
           
           {/* Card 2 */}
           <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-            <div className="relative card-glass p-8 hover:scale-105 transition-transform">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur opacity-0 dark:opacity-20 group-hover:opacity-30 transition-opacity"></div>
+            <div className="relative bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-3xl p-8 hover:scale-105 transition-transform shadow-sm hover:shadow-md">
               <div className="text-7xl mb-6 drop-shadow-md">✨</div>
-              <h3 className="text-3xl font-bold mb-4 text-slate-100 tracking-tight">Preuves Zero-Knowledge</h3>
-              <p className="text-slate-400 leading-relaxed text-lg">
+              <h3 className="text-3xl font-bold mb-4 text-slate-900 dark:text-slate-100 tracking-tight">Preuves Zero-Knowledge</h3>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
                 Vérification cryptographique sans révéler le contenu. 
                 Prouvez votre vote <span className="font-bold text-purple-400">sans le montrer</span> à personne.
               </p>
@@ -153,7 +192,7 @@ export default function HomePage() {
             <p className="text-2xl text-slate-400 font-medium max-w-2xl mx-auto">
               Commencez dès maintenant avec NovaVote - la plateforme de vote sécurisée et transparente
             </p>
-            <Link href="/login">
+            <Link href="/register">
               <button className="btn-primary text-2xl px-12 py-6 shadow-2xl animate-gradient">
                 Créer une Élection
               </button>

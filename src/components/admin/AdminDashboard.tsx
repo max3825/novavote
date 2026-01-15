@@ -144,13 +144,12 @@ export default function AdminDashboard() {
   // Ne rien afficher pendant la vérification auth
   if (isCheckingAuth || !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 flex items-center justify-center">
         <div className="text-center">
           <div className="relative w-16 h-16 mx-auto mb-6">
-            <div className="absolute inset-0 rounded-full border-4 border-slate-700 border-t-indigo-500 animate-spin"></div>
-            <div className="absolute inset-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 opacity-20 blur"></div>
+            <div className="absolute inset-0 rounded-full border-4 border-slate-200 dark:border-slate-700 border-t-indigo-500 animate-spin"></div>
           </div>
-          <p className="text-slate-100 font-semibold text-lg">Vérification...</p>
+          <p className="text-slate-600 dark:text-slate-100 font-semibold text-lg">Vérification...</p>
         </div>
       </div>
     )
@@ -158,11 +157,11 @@ export default function AdminDashboard() {
 
   if (showWizard) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-8">
+      <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 p-8">
         <div className="max-w-4xl mx-auto">
           <button 
             onClick={() => setShowWizard(false)}
-            className="mb-6 px-6 py-3 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 hover:border-slate-600 text-slate-100 font-semibold transition-all hover:shadow-md hover:scale-105"
+            className="mb-6 px-6 py-3 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-900 dark:text-slate-100 font-semibold transition-all hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-700/50"
           >
             ← Retour au dashboard
           </button>
@@ -173,23 +172,23 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
-      {/* Header avec glassmorphism */}
-      <div className="border-b border-slate-700 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-10 shadow-lg shadow-indigo-500/5">
+    <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800">
+      {/* Header - Clean White with border */}
+      <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-10 shadow-sm dark:shadow-indigo-500/5">
         <div className="max-w-7xl mx-auto px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h1 className="text-3xl font-extrabold tracking-tight">
-                <span className="gradient-text">NovaVote</span> <span className="text-slate-100">Admin</span>
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                NovaVote Admin
               </h1>
-              <p className="text-slate-400 text-sm font-medium">
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
                 Gestion complète de vos élections en temps réel
               </p>
             </div>
             <div className="flex gap-3">
               <button 
                 onClick={() => router.push('/')}
-                className="px-5 py-2.5 rounded-lg bg-slate-800 border border-slate-700 hover:border-indigo-500 text-slate-300 hover:text-indigo-400 font-semibold text-sm transition-all shadow-sm"
+                className="px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-indigo-500 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 font-semibold text-sm transition-all shadow-sm"
               >
                 Accueil
               </button>
@@ -198,7 +197,7 @@ export default function AdminDashboard() {
                   apiClient.logout()
                   router.push('/login')
                 }}
-                className="px-5 py-2.5 rounded-lg bg-slate-800/50 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all"
+                className="px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all"
               >
                 Déconnexion
               </button>
@@ -208,53 +207,49 @@ export default function AdminDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-12">
-        {/* Stats Cards - Pop effect */}
+        {/* Stats Cards - Clean White with dark variants */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
           {/* Total */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
-            <div className="relative card-glass p-6 shadow-xl shadow-indigo-500/20 hover:-translate-y-1 transition-transform duration-300">
-              <div className="absolute top-4 right-4 p-2 bg-indigo-500/20 rounded-lg text-indigo-400">📊</div>
-              <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Total Élections</div>
-              <div className="text-4xl font-extrabold tracking-tight text-slate-100">
-                {elections.length}
-              </div>
+          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-indigo-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Élections</div>
+              <div className="text-2xl">📊</div>
+            </div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+              {elections.length}
             </div>
           </div>
 
           {/* En cours */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
-            <div className="relative card-glass p-6 shadow-xl shadow-emerald-500/20 hover:-translate-y-1 transition-transform duration-300">
-              <div className="absolute top-4 right-4 p-2 bg-emerald-500/20 rounded-lg text-emerald-400">🟢</div>
-              <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">En cours</div>
-              <div className="text-4xl font-extrabold tracking-tight text-slate-100">
-                {elections.filter(e => e.status === 'open').length}
-              </div>
+          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-emerald-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">En cours</div>
+              <div className="text-2xl">🟢</div>
+            </div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+              {elections.filter(e => e.status === 'open').length}
             </div>
           </div>
 
           {/* Brouillons */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-slate-400 to-slate-500 rounded-2xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
-            <div className="relative card-glass p-6 shadow-xl shadow-slate-500/20 hover:-translate-y-1 transition-transform duration-300">
-              <div className="absolute top-4 right-4 p-2 bg-slate-700 rounded-lg text-slate-400">📝</div>
-              <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Brouillons</div>
-              <div className="text-4xl font-extrabold tracking-tight text-slate-100">
-                {elections.filter(e => e.status === 'draft').length}
-              </div>
+          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-slate-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Brouillons</div>
+              <div className="text-2xl">📝</div>
+            </div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+              {elections.filter(e => e.status === 'draft').length}
             </div>
           </div>
 
           {/* Terminées */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
-            <div className="relative card-glass p-6 shadow-xl shadow-amber-500/20 hover:-translate-y-1 transition-transform duration-300">
-              <div className="absolute top-4 right-4 p-2 bg-amber-500/20 rounded-lg text-amber-400">✅</div>
-              <div className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Terminées</div>
-              <div className="text-4xl font-extrabold tracking-tight text-slate-100">
-                {elections.filter(e => e.status === 'closed' || e.status === 'tallied').length}
-              </div>
+          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-amber-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Terminées</div>
+              <div className="text-2xl">✅</div>
+            </div>
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+              {elections.filter(e => e.status === 'closed' || e.status === 'tallied').length}
             </div>
           </div>
         </div>
@@ -263,7 +258,7 @@ export default function AdminDashboard() {
         <div className="mb-10">
           <button 
             onClick={handleCreateElection}
-            className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-lg hover:from-indigo-700 hover:to-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40 hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 shadow-md hover:shadow-lg dark:shadow-indigo-500/30 dark:hover:shadow-indigo-500/40 hover:-translate-y-0.5"
           >
             <span className="mr-2 text-xl">+</span> Créer une nouvelle élection
           </button>
@@ -271,16 +266,16 @@ export default function AdminDashboard() {
 
         {/* Error */}
         {error && (
-          <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-200 font-medium flex items-center shadow-sm">
+          <div className="mb-8 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg text-red-700 dark:text-red-200 font-medium flex items-center shadow-sm">
             <span className="mr-2">⚠️</span> {error}
           </div>
         )}
 
-        {/* Elections List - Floating Rows */}
+        {/* Elections List - Clean White Cards */}
         {loading ? (
           <div className="text-center py-20">
-            <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-700 border-t-indigo-500 mb-4"></div>
-            <p className="text-slate-400 font-medium">Chargement des élections...</p>
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-slate-200 dark:border-slate-700 border-t-indigo-500 mb-4"></div>
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Chargement des élections...</p>
           </div>
           ) : elections.length === 0 ? (
           <EmptyElections onCreate={handleCreateElection} />
@@ -289,14 +284,14 @@ export default function AdminDashboard() {
             {elections.map((election) => (
               <div 
                 key={election.id} 
-                className="group card-glass p-6 shadow-xl hover:shadow-2xl shadow-indigo-500/10 hover:shadow-indigo-500/20 transition-all duration-200 relative overflow-hidden"
+                className="group bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-lg p-6 shadow-sm hover:shadow-md dark:hover:shadow-indigo-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all relative overflow-hidden"
               >
                 {/* Left Accent Border */}
                 <div className={`absolute left-0 top-0 bottom-0 w-1 ${
                     election.status === 'open' ? 'bg-emerald-500' :
-                    election.status === 'draft' ? 'bg-slate-600' :
+                    election.status === 'draft' ? 'bg-slate-300 dark:bg-slate-600' :
                     election.status === 'closed' ? 'bg-amber-500' :
-                    'bg-blue-500'
+                    'bg-indigo-500'
                 }`}></div>
 
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pl-2">
@@ -305,41 +300,41 @@ export default function AdminDashboard() {
                       <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-400 transition-colors">
                         {election.title}
                       </h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border ${
-                        election.status === 'draft' ? 'bg-slate-700/50 text-slate-300 border-slate-600' :
-                        election.status === 'open' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' :
-                        election.status === 'closed' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
-                        'bg-blue-500/20 text-blue-400 border-blue-500/40'
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
+                        election.status === 'draft' ? 'bg-slate-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300' :
+                        election.status === 'open' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400' :
+                        election.status === 'closed' ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400' :
+                        'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400'
                       }`}>
                         {getStatusLabel(election.status)}
                       </span>
                     </div>
                     
-                    <p className="text-slate-400 text-sm mb-4 max-w-2xl line-clamp-1">
+                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 max-w-2xl line-clamp-1">
                       {election.description}
                     </p>
 
-                    <div className="flex items-center gap-6 text-sm">
-                      <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex flex-wrap items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
+                      <div className="flex items-center gap-2">
                         <span className="text-lg">📅</span>
-                        <span className="font-medium text-slate-300">
+                        <span className="font-medium text-slate-900 dark:text-slate-300">
                           {new Date(election.start_date).toLocaleDateString('fr-FR')}
                         </span>
-                        <span className="text-slate-600">→</span>
-                        <span className="font-medium text-slate-300">
+                        <span className="text-slate-400 dark:text-slate-600">→</span>
+                        <span className="font-medium text-slate-900 dark:text-slate-300">
                           {new Date(election.end_date).toLocaleDateString('fr-FR')}
                         </span>
                       </div>
                       
-                      <div className="flex items-center gap-2 text-slate-400">
+                      <div className="flex items-center gap-2">
                         <span className="text-lg">❓</span>
-                        <span className="font-medium text-slate-300">{election.questions.length} questions</span>
+                        <span className="font-medium">{election.questions.length} questions</span>
                       </div>
 
                       {election.ballot_count !== undefined && (
-                        <div className="flex items-center gap-2 text-indigo-400 bg-indigo-500/20 px-3 py-1 rounded-md border border-indigo-500/30">
+                        <div className="flex items-center gap-2 bg-indigo-50 dark:bg-indigo-500/20 px-3 py-1 rounded-md border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-400 font-medium">
                           <span className="font-bold">{election.ballot_count}</span>
-                          <span className="font-medium text-xs uppercase">votes</span>
+                          <span className="text-xs uppercase">votes</span>
                         </div>
                       )}
                     </div>
@@ -349,20 +344,20 @@ export default function AdminDashboard() {
                     {getNextStatus(election.status) && (
                       <button
                         onClick={() => handleUpdateStatus(election.id, getNextStatus(election.status)!)}
-                        className="px-4 py-2 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-400 border border-indigo-500/30 font-semibold text-sm transition-colors"
+                        className="px-4 py-2 rounded-lg bg-indigo-100 dark:bg-indigo-500/20 hover:bg-indigo-200 dark:hover:bg-indigo-500/30 text-indigo-700 dark:text-indigo-400 font-semibold text-sm transition-colors border border-indigo-200 dark:border-indigo-500/30"
                       >
                         {getNextStatusLabel(election.status)}
                       </button>
                     )}
                     <button
                       onClick={() => router.push(`/admin/election/${election.id}`)}
-                      className="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-slate-600 text-slate-300 font-semibold text-sm hover:bg-slate-700/50 transition-all"
+                      className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700/50 font-semibold text-sm transition-all"
                     >
                       Détails
                     </button>
                     <button
                       onClick={() => handleDeleteElection(election.id, election.title)}
-                      className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      className="p-2 rounded-lg text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                       title="Supprimer"
                     >
                       🗑️

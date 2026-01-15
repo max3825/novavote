@@ -2,10 +2,10 @@
 
 import { AuthForm } from "@/components/auth/AuthForm";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <AuthForm initialMode="login" />
+      <AuthForm initialMode="register" />
     </div>
   );
 }

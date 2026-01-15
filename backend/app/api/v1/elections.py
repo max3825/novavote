@@ -5,6 +5,7 @@ from typing import List
 from datetime import datetime, timedelta
 import uuid
 import base64
+import json
 import logging
 from app.core.database import get_db
 from app.models.models import Election, User, ElectionStatus, MagicLink, Ballot, Result
@@ -141,7 +142,7 @@ async def get_election_stats(
     results_by_question = []
     for q_idx, question in enumerate(election.questions):
         question_title = question.get('question', f'Question {q_idx + 1}')
-        question_type = question.get('question_type', 'single')
+        question_type = question.get('type', 'single')  # CORRIGÉ: type au lieu de question_type
         options = question.get('options', [])
         option_counts = {opt: 0 for opt in options}
         
@@ -154,10 +155,42 @@ async def get_election_stats(
                         encrypted_value = choice_data['encrypted']
                         try:
                             decoded = base64.b64decode(encrypted_value).decode('iso-8859-1')
-                            if decoded in options:
-                                option_counts[decoded] += 1
-                            else:
-                                logger.warning("Vote value not found in options: %s", decoded)
+                            
+                            # ========================================
+                            # LOGIQUE DE COMPTAGE PAR TYPE
+                            # ========================================
+                            try:
+                                decoded_list = json.loads(decoded)
+                                
+                                # TYPE: CHOIX MULTIPLE → Compter toutes les options sélectionnées
+                                if question_type == 'multiple' and isinstance(decoded_list, list):
+                                    for selected_option in decoded_list:
+                                        if selected_option in options:
+                                            option_counts[selected_option] += 1
+                                        else:
+                                            logger.warning("Multiple vote option not found: %s", selected_option)
+                                
+                                # TYPE: CLASSEMENT (RANKING) → Compter UNIQUEMENT le 1er choix
+                                # Format: {"1": "Option A", "2": "Option B", "3": "Option C"}
+                                # Seul le choix en position "1" compte (scrutin majoritaire à 1 tour)
+                                elif question_type == 'ranking' and isinstance(decoded_list, dict):
+                                    first_choice = decoded_list.get("1")
+                                    if first_choice and first_choice in options:
+                                        option_counts[first_choice] += 1
+                                    elif first_choice:
+                                        logger.warning("Ranking first choice not found: %s", first_choice)
+                                
+                                # Autre type JSON → Warning
+                                else:
+                                    logger.warning("Unexpected vote format for type %s: %s", question_type, type(decoded_list))
+                                    
+                            except (json.JSONDecodeError, ValueError):
+                                # Pas du JSON → Vote Simple (single choice)
+                                if decoded in options:
+                                    option_counts[decoded] += 1
+                                else:
+                                    logger.warning("Vote value not found in options: %s", decoded)
+                                    
                         except Exception as decode_err:
                             logger.error("Failed to decode vote: %s", decode_err)
             except Exception as e:

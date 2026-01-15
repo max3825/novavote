@@ -21,7 +21,7 @@ const CustomInput = forwardRef<HTMLButtonElement, any>(
       type="button"
       onClick={onClick}
       ref={ref}
-      className="w-full px-4 py-3 text-left bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+      className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-slate-100 hover:border-blue-500 dark:hover:border-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
     >
       <div className="flex items-center justify-between">
         <span className={value ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}>

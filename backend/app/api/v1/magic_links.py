@@ -7,7 +7,7 @@ import logging
 from app.core.database import get_db
 from app.core.config import get_settings
 from app.models.models import Election, MagicLink
-from app.schemas.schemas import MagicLinkRequest, MagicLinkResponse
+from app.schemas.schemas import AccessLinkRequest, AccessLinkResponse
 from app.services.email_service import email_service
 
 router = APIRouter()
@@ -15,9 +15,9 @@ settings = get_settings()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/generate", response_model=MagicLinkResponse)
+@router.post("/generate", response_model=AccessLinkResponse)
 async def generate_magic_link(
-    request: MagicLinkRequest,
+    request: AccessLinkRequest,
     db: AsyncSession = Depends(get_db)
 ):
     """Generate and send magic link for voter authentication."""
@@ -56,7 +56,7 @@ async def generate_magic_link(
         # Log error but don't fail - user can still use token if they have it
         logger.error("Failed to send email: %s", str(e))
     
-    return MagicLinkResponse(
+    return AccessLinkResponse(
         message="Magic link sent successfully",
         expires_in_minutes=settings.MAGIC_LINK_EXPIRE_MINUTES
     )

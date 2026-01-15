@@ -36,7 +36,12 @@ class Token(BaseModel):
 class QuestionCreate(BaseModel):
     question: str
     options: List[str]
-    question_type: Optional[str] = "single"  # single, multiple, ranking
+    type: Optional[str] = "single"  # single, multiple, ranking (renommé de question_type -> type)
+
+    def model_post_init(self, __context: Any) -> None:
+        """Ajoute automatiquement l'option 'Vote blanc' pour single-choice"""
+        if self.type == "single" and "Vote blanc" not in self.options:
+            self.options.append("Vote blanc")
 
 
 class ElectionBase(BaseModel):
@@ -74,20 +79,25 @@ class BallotSubmit(BaseModel):
 
 class BallotResponse(BaseModel):
     id: UUID4
-    tracking_code: str
+    tracking_code: str  # Garder le nom interne pour compatibilité
     timestamp: datetime
     ipfs_hash: Optional[str] = None
 
     class Config:
         from_attributes = True
+    
+    @property
+    def receipt_code(self) -> str:
+        """Alias pour accès utilisateur"""
+        return self.tracking_code
 
 
 # Magic Link schemas
-class MagicLinkRequest(BaseModel):
+class AccessLinkRequest(BaseModel):
     election_id: UUID4
     email: EmailStr
 
 
-class MagicLinkResponse(BaseModel):
+class AccessLinkResponse(BaseModel):
     message: str
     expires_in_minutes: int

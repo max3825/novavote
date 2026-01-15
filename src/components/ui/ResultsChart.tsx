@@ -14,7 +14,7 @@ const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b', '#ef4444'
 
 export function ResultsChart({ data }: ResultsChartProps) {
   return (
-    <div className="w-full h-80 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+    <div className="w-full h-80 p-4 bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.1} />

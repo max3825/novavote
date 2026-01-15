@@ -17,6 +17,7 @@ export function ParticipantImporter({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [manualText, setManualText] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (
@@ -89,16 +90,39 @@ export function ParticipantImporter({
     }
   };
 
-  const handleManualAdd = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = event.target.value;
-    const lines = text
-      .split(/[\n,;]/)
-      .map((line) => line.trim().toLowerCase())
-      .filter((line) => line.includes("@") && line.includes("."));
+  // Validation simple et efficace (format email basique)
+  const isValidEmail = (value: string): boolean => {
+    const email = value.trim().toLowerCase();
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    return re.test(email);
+  };
 
-    const merged = mergeEmails(emails, lines);
+  // Ne pas ajouter sur onChange: seulement mettre à jour le visuel
+  const handleManualChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setManualText(event.target.value);
+  };
+
+  // Déclencheurs: Entrée, Espace, Virgule
+  const tryAddManualEmail = () => {
+    const candidate = manualText.trim().toLowerCase();
+    if (!candidate) return;
+
+    // Permettre collage de plusieurs emails séparés par espace/virgule/nouvelle ligne
+    const parts = candidate.split(/[\s,;\n]+/).filter(Boolean);
+    const validParts = parts.filter(isValidEmail);
+    if (validParts.length === 0) return;
+
+    const merged = mergeEmails(emails, validParts);
     setEmails(merged);
     onEmailsChange(merged);
+    setManualText("");
+  };
+
+  const handleManualKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" || event.key === " " || event.key === ",") {
+      event.preventDefault();
+      tryAddManualEmail();
+    }
   };
 
   return (
@@ -194,11 +218,24 @@ export function ParticipantImporter({
         <label className="block text-sm font-medium text-slate-300">
           Ou entrez les emails manuellement
         </label>
-        <textarea
-          onChange={handleManualAdd}
-          placeholder="email1@example.com&#10;email2@example.com&#10;&#10;Ou séparés par des virgules: email1@example.com, email2@example.com"
-          className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 font-mono resize-none h-24"
-        />
+        <div className="flex items-start gap-2">
+          <textarea
+            value={manualText}
+            onChange={handleManualChange}
+            onKeyDown={handleManualKeyDown}
+            placeholder="Tapez un email et appuyez sur Entrée, Espace ou Virgule."
+            aria-label="Saisie manuelle des emails"
+            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30 font-mono resize-none h-24"
+          />
+          <button
+            type="button"
+            onClick={tryAddManualEmail}
+            className="rounded-lg bg-indigo-600 hover:bg-indigo-700 px-3 py-2 text-sm font-semibold text-white self-stretch"
+            aria-label="Ajouter l'email saisi"
+          >
+            Ajouter
+          </button>
+        </div>
       </div>
 
       {/* Email List */}
