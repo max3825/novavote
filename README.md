@@ -21,6 +21,10 @@ Plateforme de vote électronique sécurisée basée sur le protocole **Belenios*
 - ✅ Tableau de bord administrateur avec statistiques en temps réel
 - ✅ Export IPFS pour archivage décentralisé
 - ✅ Magic Links pour authentification sans mot de passe
+- ✅ Authentification séparée : pages dédiées login/register
+- ✅ Saisie d'emails robuste : validation en temps réel, ajout contrôlé
+- ✅ Navigation admin claire : Dashboard et Élections distincts
+- ✅ Theme toggle persistant (dark/light)
 
 ### 🎨 Interface Moderne
 - Interface utilisateur élégante avec Next.js 14 et Tailwind CSS
@@ -157,6 +161,10 @@ L'application est maintenant accessible :
    - Cliquer sur "Nouvelle Élection"
    - Définir titre, description, questions et options
    - Configurer les dates de début/fin
+   - **Étape Participants** : Ajouter les emails des votants
+     - Importer depuis fichier CSV/TXT
+     - Ou saisir manuellement en appuyant sur Entrée/Espace/Virgule
+     - Chaque email est validé et dédupliqué automatiquement
 
 2. **Ouvrir l'élection**
    - Générer automatiquement les clés cryptographiques
@@ -171,6 +179,11 @@ L'application est maintenant accessible :
 4. **Archivage IPFS**
    - Exporter l'élection vers IPFS pour archivage permanent
    - Conserver le CID pour vérification future
+
+5. **Gérer les élections**
+   - Vue dédiée `/admin/elections` pour liste et gestion
+   - Détails de chaque élection : statut, participants, questions
+   - Actions rapides : modifier statut, voir détails, supprimer
 
 ### Pour les Électeurs
 
@@ -188,6 +201,21 @@ L'application est maintenant accessible :
 3. **Consulter les résultats**
    - Une fois l'élection décomptée, les résultats sont publics
    - Graphiques interactifs avec répartition des votes
+   - Résultats provisoires visibles pendant le scrutin (participation)
+   - Résultats détaillés après clôture de l'élection
+
+### Authentification
+
+**Flux de Connexion**
+- Page `/login` : Se connecter avec email/mot de passe
+- Page `/register` : Créer un nouveau compte administrateur
+- Boutons distincts sur la homepage pour ces deux flux
+- Le premier compte créé devient automatiquement administrateur
+
+**Session et Sécurité**
+- Tokens JWT stockés en cookie httpOnly (protégé contre XSS)
+- Expiration automatique des sessions
+- Redirection automatique si non authentifié
 
 ## 🔧 Développement Local
 
