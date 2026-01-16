@@ -40,8 +40,8 @@ export default function ElectionDetails() {
     try {
       setLoading(true)
       setError(null)
-      const data = await apiClient.getElection(electionId)
-      setElection(data)
+      const data = await apiClient.getElection(electionId);
+      setElection(data as Election);
     } catch (err: unknown) {
       const message = getErrorMessage(err)
       if (message.includes('401')) {
@@ -159,8 +159,8 @@ export default function ElectionDetails() {
             <div className="text-6xl mb-6">❌</div>
             <h2 className="text-2xl font-bold text-slate-100 mb-3">Erreur</h2>
             <p className="text-slate-400 mb-8 font-medium">{error || 'Élection introuvable'}</p>
-            <button 
-              onClick={() => router.push('/admin')} 
+            <button
+              onClick={() => router.push('/admin')}
               className="btn-primary"
             >
               Retour au dashboard
@@ -188,12 +188,11 @@ export default function ElectionDetails() {
                 <h1 className="text-5xl font-extrabold tracking-tight gradient-text">
                   {election.title}
                 </h1>
-                <span className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wide shadow-lg ${
-                  election.status === 'draft' ? 'bg-slate-700/50 text-slate-300 border border-slate-600' :
-                  election.status === 'open' ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-green-500/30' :
-                  election.status === 'closed' ? 'bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-orange-500/30' :
-                  'bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-blue-500/30'
-                }`}>
+                <span className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wide shadow-lg ${election.status === 'draft' ? 'bg-slate-700/50 text-slate-300 border border-slate-600' :
+                    election.status === 'open' ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-green-500/30' :
+                      election.status === 'closed' ? 'bg-gradient-to-r from-orange-400 to-amber-500 text-white shadow-orange-500/30' :
+                        'bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-blue-500/30'
+                  }`}>
                   {getStatusLabel(election.status)}
                 </span>
               </div>
