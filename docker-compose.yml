@@ -60,14 +60,14 @@ services:
       
       # Email Configuration (from .env)
       MAIL_ENABLED: "${MAIL_ENABLED:-true}"
-      MAIL_SERVER: "${MAIL_SERVER}"
-      MAIL_PORT: "${MAIL_PORT}"
-      MAIL_USERNAME: "${MAIL_USERNAME}"
-      MAIL_PASSWORD: "${MAIL_PASSWORD}"
-      MAIL_FROM: "${MAIL_FROM}"
-      MAIL_FROM_NAME: "${MAIL_FROM_NAME:-NovaVote}"
-      MAIL_USE_TLS: "${MAIL_USE_TLS:-true}"
-      MAIL_USE_SSL: "${MAIL_USE_SSL:-false}"
+      MAIL_SERVER: "${MAIL_SERVER:-smtp.grenoble-inp.fr}"
+      MAIL_PORT: "${MAIL_PORT:-465}"
+      MAIL_USERNAME: "${MAIL_USERNAME:-}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
+      MAIL_FROM: "${MAIL_FROM:-noreply@novavote.local}"
+      MAIL_FROM_NAME: "${MAIL_FROM_NAME:-NovaVote Platform}"
+      MAIL_USE_TLS: "${MAIL_USE_TLS:-false}"
+      MAIL_USE_SSL: "${MAIL_USE_SSL:-true}"
       MAGIC_LINK_EXPIRE_MINUTES: "${MAGIC_LINK_EXPIRE_MINUTES:-15}"
       
       # Python config
