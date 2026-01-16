@@ -1,6 +1,0 @@
-alice@example.com
-bob@example.com
-charlie@example.com
-diana@example.com
-eve@example.com
-frank@invalid.x
