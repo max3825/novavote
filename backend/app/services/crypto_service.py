@@ -5,20 +5,29 @@ In production, replace with proper implementations using pycryptodome, py-ecc, o
 import json
 import hashlib
 from typing import Dict, Any
+from Crypto.PublicKey import RSA
 
 
 class CryptoEngine:
     @staticmethod
     def generate_keypair(key_size: int = 2048) -> Dict[str, Any]:
-        """Generate ElGamal-like keypair (placeholder)."""
+        """Generate RSA keypair for encryption."""
+        key = RSA.generate(key_size)
+        
+        # Export public key components
+        public_key = {
+            "n": str(key.n),  # modulus
+            "e": str(key.e)   # public exponent
+        }
+        
+        # In production, store private_key securely (HSM, KMS, encrypted storage)
+        # For this demo, we just acknowledge it exists but don't return it
         return {
-            "public_key": {
-                "p": "prime_placeholder",
-                "g": "generator_placeholder",
-                "y": "public_value_placeholder"
-            },
+            "public_key": public_key,
             "private_key": {
-                "x": "private_exponent_placeholder"
+                "d": str(key.d),  # private exponent
+                "p": str(key.p),  # prime 1
+                "q": str(key.q)   # prime 2
             }
         }
 

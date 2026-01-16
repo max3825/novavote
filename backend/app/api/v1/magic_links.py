@@ -64,7 +64,21 @@ async def generate_magic_link(
 
 @router.get("/verify/{token}")
 async def verify_magic_link(token: str, db: AsyncSession = Depends(get_db)):
-    """Verify magic link token and return election details."""
+    """Verify magic link token and return election details with clear errors."""
+    # Try to find the link ignoring constraints to provide clearer reason
+    any_link_res = await db.execute(select(MagicLink).where(MagicLink.token == token))
+    any_link = any_link_res.scalar_one_or_none()
+
+    if not any_link:
+        raise HTTPException(status_code=400, detail="Lien de vote invalide")
+
+    if any_link.used:
+        raise HTTPException(status_code=400, detail="Ce lien a déjà été utilisé")
+
+    if any_link.expires_at <= datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Lien expiré — demandez un nouvel envoi")
+
+    # Re-check full constraints
     result = await db.execute(
         select(MagicLink).where(
             MagicLink.token == token,
@@ -74,9 +88,6 @@ async def verify_magic_link(token: str, db: AsyncSession = Depends(get_db)):
     )
     magic_link = result.scalar_one_or_none()
     
-    if not magic_link:
-        raise HTTPException(status_code=400, detail="Invalid or expired magic link")
-    
     # Get election
     election_result = await db.execute(select(Election).where(Election.id == magic_link.election_id))
     election = election_result.scalar_one_or_none()
@@ -84,7 +95,7 @@ async def verify_magic_link(token: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Election not found")
     
     if election.status != "open":
-        raise HTTPException(status_code=400, detail="Election is not open for voting")
+        raise HTTPException(status_code=400, detail="Élection non ouverte au vote")
     
     return {
         "election_id": str(election.id),

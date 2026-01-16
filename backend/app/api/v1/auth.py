@@ -15,6 +15,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/register", response_model=UserResponse)
+@limiter.limit("10/minute")
 async def register(user_data: UserCreate, request: Request, db: AsyncSession = Depends(get_db)):
     """Register new admin user."""
     # No rate limiting on register - too restrictive in dev
@@ -37,6 +38,7 @@ async def register(user_data: UserCreate, request: Request, db: AsyncSession = D
 
 
 @router.post("/login", response_model=Token)
+@limiter.limit("15/minute")
 async def login(credentials: UserLogin, request: Request, db: AsyncSession = Depends(get_db)):
     """Admin login with JWT token."""
     # No rate limiting on login in dev environment

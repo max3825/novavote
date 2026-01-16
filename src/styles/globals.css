@@ -47,17 +47,17 @@
     font-family: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
     background-color: var(--color-bg-primary);
     color: var(--color-text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
   
   /* Midnight-specific base */
   body.midnight {
-    @apply bg-gradient-to-br from-slate-900 to-slate-800 text-slate-100;
+    @apply bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 text-slate-100;
   }
   
-  /* Civic-specific base */
+  /* Civic-specific base - MODE CLAIR AMÉLIORÉ */
   body.civic {
-    @apply bg-slate-50 text-slate-900;
+    @apply bg-gradient-to-br from-slate-50 via-white to-slate-50 text-slate-900;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -223,34 +223,64 @@ a {
     @apply relative bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl hover:shadow-2xl transition-all;
   }
   
-  /* Civic Theme Utilities */
+/* Civic Theme Utilities */
   .civic .glass {
-    @apply backdrop-blur-md bg-white/70 border border-slate-200 shadow-lg;
+    @apply backdrop-blur-lg bg-white/80 border border-slate-200/80 shadow-xl hover:shadow-2xl transition-all;
   }
   
   .civic .gradient-text {
-    @apply bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 bg-clip-text text-transparent;
   }
   
   .civic .input-modern {
-    @apply w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-500 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 focus:outline-none transition-all font-medium;
+    @apply w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder:text-slate-500 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 focus:outline-none transition-all font-medium shadow-sm hover:shadow-md;
   }
   
   .civic .btn-primary {
-    @apply px-6 py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold shadow-md shadow-teal-600/20 hover:shadow-lg hover:shadow-teal-600/30 transition-all hover:scale-105;
+    @apply px-6 py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold shadow-lg shadow-teal-600/25 hover:shadow-xl hover:shadow-teal-600/40 transition-all hover:scale-105 active:scale-95;
   }
   
   .civic .btn-secondary {
-    @apply px-6 py-3 rounded-full bg-slate-100 border border-slate-300 hover:border-slate-400 text-slate-900 font-semibold transition-all hover:shadow-md hover:scale-105;
+    @apply px-6 py-3 rounded-full bg-slate-100 border border-slate-300 hover:border-slate-400 text-slate-900 font-semibold transition-all hover:shadow-md hover:scale-105 active:scale-95;
   }
   
   .civic .card-glass {
-    @apply relative bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-lg hover:shadow-xl transition-all;
+    @apply relative bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl shadow-lg hover:shadow-2xl hover:border-slate-300 transition-all;
   }
   
-  /* Glow Effect for Civic Success */
+  .civic .card-hover {
+    @apply transform hover:-translate-y-1 transition-transform duration-300;
+  }
+  
+  /* Glow Effect for Civic */
   .civic .glow-emerald {
-    @apply shadow-lg shadow-emerald-500/30;
+    @apply shadow-lg shadow-emerald-500/20;
+  }
+  
+  .civic .glow-teal {
+    @apply shadow-lg shadow-teal-500/20;
+  }
+  
+  /* Civic Form Elements */
+  .civic input,
+  .civic textarea,
+  .civic select {
+    @apply bg-white text-slate-900 border-slate-300;
+  }
+  
+  .civic input:focus,
+  .civic textarea:focus,
+  .civic select:focus {
+    @apply border-teal-500 ring-teal-500/20;
+  }
+  
+  /* Civic Buttons */
+  .civic button {
+    @apply transition-all duration-300;
+  }
+  
+  .civic button:hover:not(:disabled) {
+    @apply shadow-md;
   }
   
   .midnight .glow-indigo {

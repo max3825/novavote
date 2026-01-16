@@ -51,6 +51,10 @@ class ElectionBase(BaseModel):
     end_date: Optional[datetime] = None
     questions: List[QuestionCreate]
 
+
+class ElectionCreate(ElectionBase):
+    voter_emails: Optional[List[EmailStr]] = None
+
     @field_validator("end_date")
     @classmethod
     def validate_end_date(cls, v: Optional[datetime], info) -> Optional[datetime]:
@@ -82,10 +86,6 @@ class ElectionBase(BaseModel):
             raise ValueError("La date de début ne peut pas être dans le passé")
         
         return v
-
-
-class ElectionCreate(ElectionBase):
-    voter_emails: Optional[List[str]] = None
 
 
 class ElectionResponse(ElectionBase):

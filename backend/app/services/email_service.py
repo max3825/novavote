@@ -412,5 +412,35 @@ Vous recevrez un email lors de la publication des résultats.
         except Exception as e:
             logger.error("[EMAIL ERROR] Failed to send vote confirmation to %s: %s", email, str(e))
 
+    @staticmethod
+    async def send_results_published(email: str, election_title: str, election_id: str):
+        """Notify voter that results are published."""
+        if not settings.MAIL_ENABLED:
+            logger.info("[EMAIL DISABLED] Would send results publication to %s", email)
+            return
+
+        results_url = f"{settings.PUBLIC_URL}/results/{election_id}"
+        html_content = f'''<!DOCTYPE html>
+<html lang="fr"><body style="background:#0b0f19;color:#e5e7eb;font-family:Arial,sans-serif;">
+  <div style="max-width:560px;margin:24px auto;background:#111827;border:1px solid #1f2937;border-radius:12px;padding:24px;">
+    <h2 style="margin:0 0 12px;color:#93c5fd;">Résultats publiés</h2>
+    <p style="margin:0 0 16px;color:#e5e7eb;">Les résultats de l'élection {election_title} sont disponibles.</p>
+    <p style="margin:0 0 24px"><a href="{results_url}" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;">Voir les résultats</a></p>
+    <p style="margin:0;color:#9ca3af;font-size:12px">Vérifiez votre bulletin avec votre code de suivi.</p>
+  </div>
+</body></html>'''
+        text_content = f"Résultats publiés - {election_title}\n{results_url}"
+        try:
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = f"Résultats publiés - {election_title}"
+            msg['From'] = f"{settings.MAIL_FROM_NAME} <{settings.MAIL_FROM}>"
+            msg['To'] = email
+            msg.attach(MIMEText(text_content, 'plain', 'utf-8'))
+            msg.attach(MIMEText(html_content, 'html', 'utf-8'))
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(_email_executor, EmailService._send_smtp_email, msg, email)
+        except Exception as e:
+            logger.error("[EMAIL ERROR] Failed to send results publication to %s: %s", email, str(e))
+
 
 email_service = EmailService()

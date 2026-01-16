@@ -12,10 +12,12 @@ import csv
 import io
 import asyncio
 from app.core.database import get_db
+from app.services.audit_service import log_event
 from app.models.models import Election, User, ElectionStatus, MagicLink, Ballot, Result
 from app.schemas.schemas import ElectionCreate, ElectionResponse
 from app.services.crypto_service import CryptoEngine
-from app.services.email_service import email_service
+from app.services.email_service import email_service, EmailService
+from app.core.redis import get_redis
 from app.api.v1.dependencies import get_current_admin_user
 import secrets
 from app.core.config import get_settings
@@ -54,6 +56,7 @@ async def create_election(
     db.add(new_election)
     await db.commit()
     await db.refresh(new_election)
+    log_event("election_created", {"election_id": str(new_election.id), "title": new_election.title})
     return new_election
 
 
@@ -120,9 +123,21 @@ async def update_election_status(
             # Exécuter l'envoi des emails
             await send_invitations()
     
+    # Si on passe à TALLIED (décomptée), notifier les votants
+    if election.status == ElectionStatus.CLOSED and new_status == ElectionStatus.TALLIED:
+        try:
+            ballots_result = await db.execute(select(Ballot).where(Ballot.election_id == election.id))
+            ballots = ballots_result.scalars().all()
+            for b in ballots:
+                if b.voter_email:
+                    asyncio.create_task(EmailService.send_results_published(b.voter_email, election.title, str(election.id)))
+        except Exception as e:
+            logger.error("[EMAIL ERROR] Failed to notify results: %s", e)
+
     election.status = new_status
     election.updated_at = datetime.utcnow()
     await db.commit()
+    log_event("election_status_updated", {"election_id": str(election.id), "new_status": new_status})
     
     return {"message": f"Election status updated to {new_status}"}
 
@@ -133,6 +148,15 @@ async def get_election_stats(
     db: AsyncSession = Depends(get_db)
 ):
     """Get election statistics with detailed results."""
+    # Try cache first
+    try:
+        redis = await get_redis()
+        cache_key = f"election:{election_id}:stats"
+        cached = await redis.get(cache_key)
+        if cached:
+            return json.loads(cached)
+    except Exception:
+        pass
     result = await db.execute(select(Election).where(Election.id == uuid.UUID(election_id)))
     election = result.scalar_one_or_none()
     if not election:
@@ -215,13 +239,20 @@ async def get_election_stats(
             ]
         })
     
-    return {
+    stats = {
         "election_id": election_id,
         "votes_received": vote_count,
         "voters_invited": invited_count,
         "participation_rate": (vote_count / invited_count * 100) if invited_count > 0 else 0,
         "results_by_question": results_by_question
     }
+    # Store cache (TTL 60s)
+    try:
+        redis = await get_redis()
+        await redis.setex(f"election:{election_id}:stats", 60, json.dumps(stats))
+    except Exception:
+        pass
+    return stats
 
 
 @router.get("/{election_id}", response_model=ElectionResponse)
@@ -257,6 +288,7 @@ async def delete_election(
     await db.execute(delete(Result).where(Result.election_id == election.id))
     await db.delete(election)
     await db.commit()
+    log_event("election_deleted", {"election_id": election_id})
     
     return {"message": "Election deleted successfully"}
 

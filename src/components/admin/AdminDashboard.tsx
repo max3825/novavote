@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiClient } from '@/lib/api-client'
+import { HeaderButton } from '@/components/ui/HeaderButton'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
@@ -157,11 +158,11 @@ export default function AdminDashboard() {
 
   if (showWizard) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 p-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 p-6 sm:p-8">
+        <div className="max-w-4xl mx-auto space-y-6">
           <button 
             onClick={() => setShowWizard(false)}
-            className="mb-6 px-6 py-3 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-900 dark:text-slate-100 font-semibold transition-all hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-700/50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-900 dark:text-slate-100 font-semibold transition-all hover:shadow-md hover:bg-slate-50 dark:hover:bg-slate-700/50"
           >
             ← Retour au dashboard
           </button>
@@ -172,81 +173,85 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800">
-      {/* Header - Clean White with border */}
-      <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-10 shadow-sm dark:shadow-indigo-500/5">
-        <div className="max-w-7xl mx-auto px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950">
+      {/* Header - Clean & Optimized */}
+      <div className="border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-10 shadow-md dark:shadow-indigo-500/10">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-6 sm:py-7">
+          <div className="flex items-center justify-between gap-4 sm:gap-6">
+            <div className="space-y-1 flex-1">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
                 NovaVote Admin
               </h1>
-              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+              <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm font-medium">
                 Gestion complète de vos élections en temps réel
               </p>
             </div>
-            <div className="flex gap-3">
-              <button 
-                onClick={() => router.push('/')}
-                className="px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-indigo-500 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 font-semibold text-sm transition-all shadow-sm"
-              >
-                Accueil
-              </button>
-              <button 
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="hidden sm:block">
+                <HeaderButton
+                  variant="secondary"
+                  icon="🏠"
+                  label="Accueil"
+                  onClick={() => router.push('/')}
+                  title="Retourner à la page d'accueil"
+                />
+              </div>
+              <HeaderButton
+                variant="danger"
+                icon="🚪"
+                label="Déco"
                 onClick={() => {
                   apiClient.logout()
                   router.push('/login')
                 }}
-                className="px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/50 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm transition-all"
-              >
-                Déconnexion
-              </button>
+                title="Se déconnecter de votre compte"
+              />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-8 py-12">
-        {/* Stats Cards - Clean White with dark variants */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-8 sm:py-12">
+        {/* Stats Cards - Optimized */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
           {/* Total */}
-          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-indigo-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+          <div className="group bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-lg dark:hover:shadow-indigo-500/20 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Élections</div>
-              <div className="text-2xl">📊</div>
+              <div className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Total Élections</div>
+              <div className="text-3xl">📊</div>
             </div>
-            <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">
               {elections.length}
             </div>
           </div>
 
           {/* En cours */}
-          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-emerald-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+          <div className="group bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-lg dark:hover:shadow-emerald-500/20 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">En cours</div>
-              <div className="text-2xl">🟢</div>
+              <div className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">En cours</div>
+              <div className="text-3xl">🟢</div>
             </div>
-            <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">
               {elections.filter(e => e.status === 'open').length}
             </div>
           </div>
 
           {/* Brouillons */}
-          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-slate-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+          <div className="group bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-lg dark:hover:shadow-slate-500/20 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Brouillons</div>
-              <div className="text-2xl">📝</div>
+              <div className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Brouillons</div>
+              <div className="text-3xl">📝</div>
             </div>
-            <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
+            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">
               {elections.filter(e => e.status === 'draft').length}
             </div>
           </div>
 
           {/* Terminées */}
-          <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-md dark:hover:shadow-amber-500/20 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+          <div className="group bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 backdrop-blur-sm rounded-xl p-6 shadow-sm hover:shadow-lg dark:hover:shadow-amber-500/20 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
-              <div className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Terminées</div>
-              <div className="text-2xl">✅</div>
+              <div className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Terminées</div>
+              <div className="text-3xl">✅</div>
             </div>
             <div className="text-4xl font-extrabold text-slate-900 dark:text-slate-100">
               {elections.filter(e => e.status === 'closed' || e.status === 'tallied').length}
