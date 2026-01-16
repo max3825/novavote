@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi.exceptions import RequestValidationError
 from app.core.config import settings
 from app.api.v1 import auth, elections, ballots, magic_links
 import logging
@@ -9,11 +13,18 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     default_response_class=ORJSONResponse
 )
+
+# Ajouter le limiter à l'app
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, lambda request, exc: {"detail": "Trop de requêtes. Réessayez plus tard."})
 
 # Basic request size limiting to mitigate resource exhaustion
 from starlette.middleware.base import BaseHTTPMiddleware

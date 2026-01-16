@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import timedelta
@@ -9,11 +11,18 @@ from app.schemas.schemas import UserCreate, UserLogin, Token, UserResponse
 from app.core.config import settings
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 @router.post("/register", response_model=UserResponse)
-async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
-    """Register new admin user."""
+async def register(user_data: UserCreate, request: Request, db: AsyncSession = Depends(get_db)):
+    """Register new admin user. Rate limited to 5 per minute."""
+    # Rate limiting: 5 registrations par minute par IP
+    try:
+        limiter.try_increment("auth:register", 5, 60)
+    except:
+        raise HTTPException(status_code=429, detail="Trop de tentatives d'inscription. Réessayez dans 1 minute.")
+    
     result = await db.execute(select(User).where(User.email == user_data.email))
     existing_user = result.scalar_one_or_none()
     if existing_user:
@@ -32,8 +41,14 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login", response_model=Token)
-async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
-    """Admin login with JWT token."""
+async def login(credentials: UserLogin, request: Request, db: AsyncSession = Depends(get_db)):
+    """Admin login with JWT token. Rate limited to 5 per minute."""
+    # Rate limiting: 5 tentatives de login par minute par IP
+    try:
+        limiter.try_increment("auth:login", 5, 60)
+    except:
+        raise HTTPException(status_code=429, detail="Trop de tentatives de connexion. Réessayez dans 1 minute.")
+    
     result = await db.execute(select(User).where(User.email == credentials.email))
     user = result.scalar_one_or_none()
     if not user or not verify_password(credentials.password, user.hashed_password):

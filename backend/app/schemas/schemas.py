@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, UUID4
+from pydantic import BaseModel, EmailStr, UUID4, field_validator
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 from app.models.models import ElectionStatus
@@ -50,6 +50,38 @@ class ElectionBase(BaseModel):
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     questions: List[QuestionCreate]
+
+    @field_validator("end_date")
+    @classmethod
+    def validate_end_date(cls, v: Optional[datetime], info) -> Optional[datetime]:
+        """Valide que end_date > start_date et que les dates ne sont pas dans le passé"""
+        if v is None:
+            return v
+        
+        # Vérifier que end_date n'est pas dans le passé
+        now = datetime.now()
+        if v < now:
+            raise ValueError("La date de fin ne peut pas être dans le passé")
+        
+        # Vérifier que end_date > start_date
+        start_date = info.data.get("start_date")
+        if start_date and v <= start_date:
+            raise ValueError("La date de fin doit être après la date de début")
+        
+        return v
+
+    @field_validator("start_date")
+    @classmethod
+    def validate_start_date(cls, v: Optional[datetime]) -> Optional[datetime]:
+        """Valide que start_date n'est pas dans le passé"""
+        if v is None:
+            return v
+        
+        now = datetime.now()
+        if v < now:
+            raise ValueError("La date de début ne peut pas être dans le passé")
+        
+        return v
 
 
 class ElectionCreate(ElectionBase):

@@ -3,7 +3,8 @@
 import { Card } from '@/components/ui/Card'
 import { ResultsChart } from '@/components/ui/ResultsChart'
 import { EmptyResults } from '@/components/ui/EmptyState'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { Button } from '@/components/ui/Button'
 
 interface ResultsViewerProps {
   stats: any
@@ -11,8 +12,39 @@ interface ResultsViewerProps {
 }
 
 export default function ResultsViewer({ stats, election }: ResultsViewerProps) {
+  const [isExporting, setIsExporting] = useState(false)
+
   if (!stats?.results_by_question) {
     return <EmptyResults />
+  }
+
+  const handleExport = async (format: 'csv' | 'json') => {
+    try {
+      setIsExporting(true)
+      const response = await fetch(
+        `/api/elections/${election.id}/export?format=${format}`,
+        {
+          method: 'GET',
+          credentials: 'include',
+        }
+      )
+
+      if (!response.ok) throw new Error('Export failed')
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `election_${election.id}_results.${format}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Export error:', error)
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   const getTypeLabel = (type: string) => {
@@ -37,6 +69,24 @@ export default function ResultsViewer({ stats, election }: ResultsViewerProps) {
 
   return (
     <div className="space-y-6">
+      {/* Export buttons */}
+      <div className="flex gap-2">
+        <Button
+          onClick={() => handleExport('csv')}
+          disabled={isExporting}
+          className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+        >
+          📥 Exporter CSV
+        </Button>
+        <Button
+          onClick={() => handleExport('json')}
+          disabled={isExporting}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+        >
+          📥 Exporter JSON
+        </Button>
+      </div>
+
       <div className="grid grid-cols-3 gap-4">
         <Card className="bg-slate-900/50 border-slate-800 p-6 text-center">
           <div className="text-4xl font-bold text-blue-400">

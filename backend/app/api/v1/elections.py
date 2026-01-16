@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from typing import List
@@ -7,6 +8,8 @@ import uuid
 import base64
 import json
 import logging
+import csv
+import io
 from app.core.database import get_db
 from app.models.models import Election, User, ElectionStatus, MagicLink, Ballot, Result
 from app.schemas.schemas import ElectionCreate, ElectionResponse
@@ -254,3 +257,143 @@ async def delete_election(
     await db.commit()
     
     return {"message": "Election deleted successfully"}
+
+
+@router.get("/{election_id}/export")
+async def export_election_results(
+    election_id: str,
+    format: str = "csv",
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Export election results as CSV or JSON (admin only)."""
+    result = await db.execute(
+        select(Election).where(
+            Election.id == uuid.UUID(election_id),
+            Election.admin_id == current_user.id
+        )
+    )
+    election = result.scalar_one_or_none()
+    
+    if not election:
+        raise HTTPException(status_code=404, detail="Election not found")
+    
+    # Récupérer les statistiques complètes
+    ballots_result = await db.execute(select(Ballot).where(Ballot.election_id == uuid.UUID(election_id)))
+    ballots = ballots_result.scalars().all()
+    vote_count = len(ballots)
+    
+    invited_count = len(election.voter_emails) if election.voter_emails else 0
+    
+    results_data = {
+        "election": {
+            "id": str(election.id),
+            "title": election.title,
+            "description": election.description,
+            "status": election.status.value,
+            "start_date": election.start_date.isoformat() if election.start_date else None,
+            "end_date": election.end_date.isoformat() if election.end_date else None,
+            "total_votes": vote_count,
+            "total_invited": invited_count,
+            "participation_rate": (vote_count / invited_count * 100) if invited_count > 0 else 0
+        },
+        "results": []
+    }
+    
+    # Traiter les résultats par question
+    for q_idx, question in enumerate(election.questions):
+        question_title = question.get('question', f'Question {q_idx + 1}')
+        question_type = question.get('type', 'single')
+        options = question.get('options', [])
+        option_counts = {opt: 0 for opt in options}
+        
+        for ballot in ballots:
+            try:
+                choices = ballot.encrypted_ballot.get('choices', [])
+                if q_idx < len(choices):
+                    choice_data = choices[q_idx]
+                    if 'encrypted' in choice_data:
+                        encrypted_value = choice_data['encrypted']
+                        try:
+                            decoded = base64.b64decode(encrypted_value).decode('iso-8859-1')
+                            
+                            try:
+                                decoded_list = json.loads(decoded)
+                                
+                                if question_type == 'multiple' and isinstance(decoded_list, list):
+                                    for selected_option in decoded_list:
+                                        if selected_option in options:
+                                            option_counts[selected_option] += 1
+                                
+                                elif question_type == 'ranking' and isinstance(decoded_list, dict):
+                                    first_choice = decoded_list.get("1")
+                                    if first_choice and first_choice in options:
+                                        option_counts[first_choice] += 1
+                                
+                            except (json.JSONDecodeError, ValueError):
+                                if decoded in options:
+                                    option_counts[decoded] += 1
+                                    
+                        except Exception as decode_err:
+                            logger.error("Failed to decode vote: %s", decode_err)
+            except Exception as e:
+                logger.exception("Error parsing ballot: %s", e)
+                continue
+        
+        question_results = {
+            "question": question_title,
+            "type": question_type,
+            "options": [
+                {
+                    "option": opt,
+                    "votes": option_counts[opt],
+                    "percentage": (option_counts[opt] / vote_count * 100) if vote_count > 0 else 0
+                }
+                for opt in options
+            ]
+        }
+        results_data["results"].append(question_results)
+    
+    # Générer la réponse selon le format demandé
+    if format.lower() == "json":
+        return results_data
+    
+    elif format.lower() == "csv":
+        # Générer CSV avec en-têtes
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        # Section d'en-tête
+        writer.writerow(["ÉLECTION"])
+        writer.writerow(["Titre", election.title])
+        writer.writerow(["Description", election.description])
+        writer.writerow(["Statut", election.status.value])
+        writer.writerow(["Début", election.start_date.isoformat() if election.start_date else ""])
+        writer.writerow(["Fin", election.end_date.isoformat() if election.end_date else ""])
+        writer.writerow(["Votes reçus", vote_count])
+        writer.writerow(["Invités", invited_count])
+        writer.writerow(["Taux de participation", f"{(vote_count / invited_count * 100) if invited_count > 0 else 0:.2f}%"])
+        writer.writerow([])
+        
+        # Résultats par question
+        for q_idx, q_result in enumerate(results_data["results"]):
+            writer.writerow([f"QUESTION {q_idx + 1}: {q_result['question']}"])
+            writer.writerow(["Option", "Votes", "Pourcentage"])
+            for option_result in q_result["options"]:
+                writer.writerow([
+                    option_result["option"],
+                    option_result["votes"],
+                    f"{option_result['percentage']:.2f}%"
+                ])
+            writer.writerow([])
+        
+        output.seek(0)
+        return StreamingResponse(
+            iter([output.getvalue()]),
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename=election_{election_id}_results.csv"}
+        )
+    
+    else:
+        raise HTTPException(status_code=400, detail="Format must be 'csv' or 'json'")
+
