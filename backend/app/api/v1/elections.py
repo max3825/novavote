@@ -10,6 +10,7 @@ import json
 import logging
 import csv
 import io
+import asyncio
 from app.core.database import get_db
 from app.models.models import Election, User, ElectionStatus, MagicLink, Ballot, Result
 from app.schemas.schemas import ElectionCreate, ElectionResponse
@@ -106,12 +107,13 @@ async def update_election_status(
                             db.add(magic_link)
                             await db.commit()
                             
-                            await email_service.send_magic_link(
+                            # Send email in background (fire-and-forget)
+                            asyncio.create_task(email_service.send_magic_link(
                                 email=email.strip(),
                                 token=token,
                                 election_title=election.title
-                            )
-                            logger.info("[EMAIL SENT] Magic link sent to %s", email.strip())
+                            ))
+                            logger.info("[EMAIL QUEUED] Magic link queued for %s", email.strip())
                         except Exception as e:
                             logger.error("[EMAIL ERROR] Failed to send to %s: %s", email, str(e))
             

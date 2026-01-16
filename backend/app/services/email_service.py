@@ -10,7 +10,8 @@ settings = get_settings()
 logger = logging.getLogger(__name__)
 
 # Thread pool for async SMTP operations
-_email_executor = ThreadPoolExecutor(max_workers=3)
+# Increased workers for faster concurrent email sending
+_email_executor = ThreadPoolExecutor(max_workers=10)
 
 
 class EmailService:
