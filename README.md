@@ -21,16 +21,19 @@ Plateforme de vote électronique sécurisée basée sur le protocole **Belenios*
 - ✅ Tableau de bord administrateur avec statistiques en temps réel
 - ✅ Export IPFS pour archivage décentralisé
 - ✅ Magic Links pour authentification sans mot de passe
-- ✅ Authentification séparée : pages dédiées login/register
+- ✅ **Architecture propre auth** : AuthLayout partagé pour login/register
+- ✅ **Pages login/register identiques** : branding et background fixes
 - ✅ Saisie d'emails robuste : validation en temps réel, ajout contrôlé
 - ✅ Navigation admin claire : Dashboard et Élections distincts
 - ✅ Theme toggle persistant (dark/light)
+- ✅ Audit logging complet avec timestamps
 
 ### 🎨 Interface Moderne
+- **Design system cohérent** : AuthLayout partagé pour expérience unifiée
 - Interface utilisateur élégante avec Next.js 14 et Tailwind CSS
-- Mode sombre par défaut optimisé
-- Animations fluides et feedback visuel (confetti, toasts)
-- Responsive design mobile-first
+- Mode sombre par défaut optimisé avec glassmorphism
+- Animations fluides et feedback visuel (confetti, toasts, gradient blobs)
+- Responsive design mobile-first avec split-screen sur desktop
 - Accessibilité WCAG 2.1 AA
 
 ## 🏗️ Architecture Technique
@@ -39,6 +42,7 @@ Plateforme de vote électronique sécurisée basée sur le protocole **Belenios*
 
 **Frontend**
 - ⚡ **Next.js 14** : App Router, React Server Components
+- 🏗️ **Architecture propre** : Composants réutilisables (AuthLayout, HeaderButton)
 - 🎨 **Tailwind CSS** : Styling moderne et responsive
 - 📊 **Chart.js** : Visualisation des résultats
 - 🔐 **Crypto-JS** : Chiffrement côté client
@@ -48,7 +52,8 @@ Plateforme de vote électronique sécurisée basée sur le protocole **Belenios*
 - 🚀 **FastAPI** : Framework async Python haute performance
 - 🗄️ **PostgreSQL 16** : Base de données relationnelle
 - ⚡ **Redis 7** : Cache et gestion de sessions
-- 🔄 **SQLAlchemy 2.0** : ORM avec support async/await
+- 🔄 **SQLAlchemy 2.0** : ORM avec su
+- 📝 **Audit Service** : Logging structuré de toutes les actionspport async/await
 - 📧 **Email** : Magic Links via SMTP
 
 **DevOps**
@@ -205,10 +210,18 @@ L'application est maintenant accessible :
    - Résultats détaillés après clôture de l'élection
 
 ### Authentification
+Authentification**
+
+**Architecture Moderne**
+- Composant `AuthLayout` partagé entre login et register
+- Pages `/login` et `/register` avec structure identique
+- Branding et background fixes (pas de déplacement visuel)
+- Formulaires glassmorphism avec validation temps réel
 
 **Flux de Connexion**
 - Page `/login` : Se connecter avec email/mot de passe
 - Page `/register` : Créer un nouveau compte administrateur
+- Navigation par liens (pas de toggle de mode)ateur
 - Boutons distincts sur la homepage pour ces deux flux
 - Le premier compte créé devient automatiquement administrateur
 
@@ -287,7 +300,9 @@ npm run format
 
 ### Audit et Traçabilité
 - Tous les votes sont enregistrés avec horodatage
-- Logs structurés pour audit
+- Logs structurés pour
+- ✅ Architecture componentisée pour réutilisabilité
+- ✅ Lazy loading des pages non critiques audit
 - Export IPFS pour archivage immuable
 
 ## 📊 Performance
@@ -334,14 +349,25 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 - **Belenios** : Protocole cryptographique de référence
 - **FastAPI** : Framework backend moderne et performant
 - **Next.js** : Framework React de nouvelle génération
-- **Vercel** : Inspiration pour l'UI/UX
+### Court terme
+- [x] Architecture propre avec composants réutilisables
+- [x] Audit logging complet
+- [x] Export route pour résultats
+- [ ] Tests E2E Playwright complets
+- [ ] Documentation API détaillée
 
-## 📧 Support et Contact
+### Moyen terme
+- [ ] Support multi-langues (i18n)
+- [ ] Dashboard analytics avancé
+- [ ] Export PDF des résultats
+- [ ] Notifications push
+- [ ] Websockets pour updates temps réel
 
-- 📫 Email : maxime.pelissier@grenoble-inp.fr
-- 🐛 Issues : [GitHub Issues](https://github.com/VOTRE_USERNAME/novavote/issues)
-- 📖 Documentation API : http://localhost:8001/docs
-
+### Long terme
+- [ ] Application mobile (React Native)
+- [ ] Intégration blockchain pour timestamping
+- [ ] Support OAuth2 (Google, Microsoft)
+- [ ] Mode offline avec synchronisation
 ## 🗺️ Roadmap
 
 - [ ] Support multi-langues (i18n)
